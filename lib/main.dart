@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(MyApp());  
 }
 
 class MyApp extends StatefulWidget {  
@@ -20,47 +20,38 @@ class _MyAppState extends State<MyApp> {
   // void initState() {
   //   Firebase.initializeApp();
   //   super.initState();
-    
   // }
 
   @override
   Widget build(BuildContext context){
     
-    return StreamBuilder<User>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot){
-        if(snapshot.hasError){
-          return Container(
-            child: Text('Error'),
-          );
-        }
-        if(snapshot.connectionState == ConnectionState.active){
-          User user = snapshot.data;
-          if(user == null){
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                scaffoldBackgroundColor: Colors.white,
-                fontFamily: 'SFProDisplay',
-              ),
-              home: LoginScreen(),
+    return MaterialApp(
+      home: StreamBuilder<User>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot){
+          if(snapshot.hasError){
+            return Container(
+              child: Text('Error'),
             );
           }
-          return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                scaffoldBackgroundColor: Colors.white,
-                fontFamily: 'SFProDisplay',
-              ),
+          if(snapshot.connectionState == ConnectionState.active){
+            User user = snapshot.data;
+            if(user == null){
+              return MaterialApp(
+                home: LoginScreen(),
+              );
+            }
+            return MaterialApp(
               home: AppointHome(),
             );
-        } 
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-      },
+          } 
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+        },
+      ),
     );
   }
 }

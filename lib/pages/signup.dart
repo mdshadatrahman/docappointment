@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctorappointment/pages/loginmethods.dart';
 import 'package:doctorappointment/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -13,13 +15,18 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
 
   var authHandler = new Auth();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phonrnumberControllr = TextEditingController();
 
-  String dorpdownValue;
+  String _genderController;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +56,14 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(      
+                  child: TextFormField(
+                    controller: _nameController,
+                    validator: (String value){
+                      if(value.isEmpty){
+                        return 'Please enter your full name';
+                      }
+                      return null;
+                    },     
                     style: TextStyle(
                       color: Colors.white,
                       decorationColor: Colors.white
@@ -73,7 +87,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.white,
                       decorationColor: Colors.white
                     ),   
-                    keyboardType: TextInputType.number,       
+                    keyboardType: TextInputType.number,
+                    controller: _ageController,
+                    validator: (String value){
+                      if(value.isEmpty){
+                        return 'Please enter your age';
+                      }
+                      return null;
+                    },     
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -91,34 +112,41 @@ class _SignUpPageState extends State<SignUpPage> {
                     alignment: Alignment.centerLeft,
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors. white),
+                        border: Border.all(color: Colors.grey[800]),
                       ),
-                      child: DropdownButton<String>(
-                        value: dorpdownValue,
-                        style: TextStyle(color: Colors.black),
-                        items:<String>[
-                          'Male',
-                          'Female'
-                        ].map<DropdownMenuItem<String>>((String value){
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(value),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: DropdownButton<String>(
+                          value: _genderController,
+                          
+                          dropdownColor: Colors.grey[800],
+                          style: TextStyle(color: Colors.white),
+                          items:<String>[
+                            'Male',
+                            'Female',
+                            'Other'
+                          ].map<DropdownMenuItem<String>>((String value){
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(value),
+                              ),
+                            );
+                          }).toList(),
+                          hint: Text(
+                            'Select your gender',
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
-                          );
-                        }).toList(),
-                        hint: Text(
-                          'Select your gender',
-                          style: TextStyle(
-                            color: Colors.white,
                           ),
+                          onChanged: (String value){
+                            setState(() {
+                              _genderController = value;
+                            });
+                          },
+                          
                         ),
-                        onChanged: (String value){
-                          setState(() {
-                            dorpdownValue = value;
-                          });
-                        },
                       ),
                     ),
                   )
@@ -131,6 +159,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       decorationColor: Colors.white
                     ),   
                     keyboardType: TextInputType.text,
+                    controller: _addressController,
+                    validator: (String value){
+                      if(value.isEmpty){
+                        return 'Please enter your address';
+                      }
+                      return null;
+                    },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -149,7 +184,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.white,
                       decorationColor: Colors.white
                     ),
-                    keyboardType: TextInputType.number,       
+                    keyboardType: TextInputType.number,
+                    controller: _phonrnumberControllr,
+                    validator: (String value){
+                      if(value.isEmpty){
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -167,6 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyle(
                       color: Colors.white
                     ),
+                    keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
                     validator: (String value){
                       if(value.isEmpty){
@@ -209,22 +252,29 @@ class _SignUpPageState extends State<SignUpPage> {
                       primary: Colors.green
                     ),
                     onPressed: () async{
-                      authHandler.handleSignUp(_emailController.text, _passwordController.text)
-                      .then((User user){
-                        Fluttertoast.showToast(
-                            msg: 'Registration Successfull. Please sign in now.',
+                      await authHandler.handleSignUp(_emailController.text, _passwordController.text);
+                      users.add({
+                        'name': _nameController.text,
+                        'age': _ageController.text,
+                        'gender': _genderController,
+                        'address': _addressController.text,
+                        'phone':_phonrnumberControllr.text,
+                        'email': _emailController.text,
+                      }).then((value) {
+                        Fluttertoast.showToast(msg: 'Registration Successfull. Please sign in now.',
                             toastLength: Toast.LENGTH_SHORT,
                             timeInSecForIosWeb: 1,
-                            fontSize: 16.0,
-                        );
-                        Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginScreen()));
-
-                      }).catchError((e) => Fluttertoast.showToast(
-                        msg: '$e',
+                            fontSize: 16.0,);
+                            Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginScreen()));
+                      })
+                    .catchError((error){
+                      Fluttertoast.showToast(
+                        msg: '$error',
                         toastLength: Toast.LENGTH_SHORT,
                         timeInSecForIosWeb: 1,
                         fontSize: 16.0,
-                      ));
+                        );
+                    });
                     },
                     child: Text('Register'),
                   ),
