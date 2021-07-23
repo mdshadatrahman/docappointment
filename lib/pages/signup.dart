@@ -252,29 +252,42 @@ class _SignUpPageState extends State<SignUpPage> {
                       primary: Colors.green
                     ),
                     onPressed: () async{
-                      await authHandler.handleSignUp(_emailController.text, _passwordController.text);
-                      users.add({
-                        'name': _nameController.text,
-                        'age': _ageController.text,
-                        'gender': _genderController,
-                        'address': _addressController.text,
-                        'phone':_phonrnumberControllr.text,
-                        'email': _emailController.text,
-                      }).then((value) {
-                        Fluttertoast.showToast(msg: 'Registration Successfull. Please sign in now.',
-                            toastLength: Toast.LENGTH_SHORT,
-                            timeInSecForIosWeb: 1,
-                            fontSize: 16.0,);
-                            Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginScreen()));
-                      })
-                    .catchError((error){
-                      Fluttertoast.showToast(
-                        msg: '$error',
+                      try {
+                        await authHandler.handleSignUp(_emailController.text, _passwordController.text);
+                        
+                        print(FirebaseAuth.instance.currentUser.uid);
+
+                        users.doc(FirebaseAuth.instance.currentUser.uid)
+                        .set({
+                          'name': _nameController.text,
+                          'age': _ageController.text,
+                          'gender': _genderController,
+                          'address': _addressController.text,
+                          'phone':_phonrnumberControllr.text,
+                          'email': _emailController.text,
+                        }).then((value) {
+                          Fluttertoast.showToast(msg: 'Registration Successfull. Please sign in now.',
+                              toastLength: Toast.LENGTH_SHORT,
+                              timeInSecForIosWeb: 1,
+                              fontSize: 16.0,);
+                              Navigator.push(context, new MaterialPageRoute(builder: (context) => new LoginScreen()));
+                        })
+                      .catchError((error){
+                        Fluttertoast.showToast(
+                          msg: '$error',
+                          toastLength: Toast.LENGTH_SHORT,
+                          timeInSecForIosWeb: 1,
+                          fontSize: 16.0,
+                          );
+                      });
+                      } catch (e) {
+                        Fluttertoast.showToast(
+                        msg: '$e',
                         toastLength: Toast.LENGTH_SHORT,
                         timeInSecForIosWeb: 1,
                         fontSize: 16.0,
                         );
-                    });
+                      }
                     },
                     child: Text('Register'),
                   ),

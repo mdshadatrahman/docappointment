@@ -54,6 +54,7 @@ class _AppointHomeState extends State<AppointHome> {
             physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
+                  userName(),
                   homeElements(),
                 ],
               ),
@@ -62,6 +63,13 @@ class _AppointHomeState extends State<AppointHome> {
       ),
       );
   }
+  
+  Container userName(){
+    return Container(
+      child: Text('Hola', style: TextStyle(color: Colors.white, fontSize: 29),) ,
+    );
+  }
+
   Center homeElements() {
     return Center(
       child: Center(

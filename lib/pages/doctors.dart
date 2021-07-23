@@ -10,13 +10,7 @@ class Doctors extends StatefulWidget {
 
 class _DoctorsState extends State<Doctors> {
   final firestoreInstance = FirebaseFirestore.instance;
-  void printDataToConsol(){
-      firestoreInstance.collection('doctors').get().then((QuerySnapshot){
-      QuerySnapshot.docs.forEach((element) {
-        print(element.data());
-      });
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -63,6 +63,7 @@ class LoginWithEmailAndPassword extends StatelessWidget {
                   decorationColor: Colors.white,
                 ),
                   controller: _passwordController,
+                  obscureText: true,
                   validator: (String value){
                     if(value.isEmpty){
                       return 'Enter your password';
