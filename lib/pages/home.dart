@@ -1,15 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctorappointment/pages/doctors.dart';
 import 'package:doctorappointment/pages/loginmethods.dart';
+import 'package:doctorappointment/pages/userprofile.dart';
 import 'package:doctorappointment/services/auth.dart';
 import 'package:doctorappointment/utils/money_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class AppointHome extends StatefulWidget {
+  
   @override
   _AppointHomeState createState() => _AppointHomeState();
 }
 
 class _AppointHomeState extends State<AppointHome> {
   var authHandler = new Auth();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +54,44 @@ class _AppointHomeState extends State<AppointHome> {
               ),
             ),
 
-        child: Center(
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  userName(),
-                  homeElements(),
-                ],
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: FutureBuilder(
+                  future: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid).get(),
+                  builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                    if(snapshot.connectionState == ConnectionState.done){
+                    Map<String, dynamic> data = snapshot.data.data() as Map<String, dynamic>;
+                    return Text(
+                        "Welcome \n"+"${data['name']}",
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        ),
+                      );
+                    }
+                    return Text('');
+                  },
+                ),
               ),
             ),
+            Center(
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      homeElements(),
+                    ],
+                  ),
+                ),
+            ),
+          ],
         ),
       ),
       );
-  }
-  
-  Container userName(){
-    return Container(
-      child: Text('Hola', style: TextStyle(color: Colors.white, fontSize: 29),) ,
-    );
   }
 
   Center homeElements() {
@@ -153,16 +177,19 @@ class _AppointHomeState extends State<AppointHome> {
               padding: EdgeInsets.all(16),
               child: ElevatedButton.icon(
                 icon: Icon(
-                  Money.money_bill_alt,
+                  Icons.circle,
                   color: Colors.grey[500],
                 ),
                 style: ElevatedButton.styleFrom(
                   primary: Colors.grey[700].withOpacity(0.4),
                   side: BorderSide(width: 2.0, color: Colors.blue),
                 ),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(context, new MaterialPageRoute(builder: (context) => UserProfile(userId: FirebaseAuth.instance.currentUser.uid)));
+
+                },
                 label: Text(
-                  'Make Payments',
+                  'My Profile',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.grey[200],

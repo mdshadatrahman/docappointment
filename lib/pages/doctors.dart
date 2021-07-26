@@ -14,7 +14,6 @@ class _DoctorsState extends State<Doctors> {
 
   @override
   Widget build(BuildContext context) {
-    //printDataToConsol();
     return Scaffold(
       backgroundColor: Colors.grey[800],
       appBar: AppBar(

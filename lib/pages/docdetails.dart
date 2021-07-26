@@ -40,7 +40,7 @@ class _DocDetailsState extends State<DocDetails> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(                      
-                      backgroundImage: NetworkImage(snapshot.data['pic']), //this line is causing error most of the time. 
+                      backgroundImage: NetworkImage(snapshot.data['pic']), 
                       backgroundColor: Colors.black,
                       radius: 90,
                     ),
