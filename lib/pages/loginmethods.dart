@@ -62,29 +62,29 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 50,
-                      width: 200,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.grey[700].withOpacity(0.1),
-                          side: BorderSide(width: 2, color: Colors.blue),
-                        ),
-                        onPressed: () async{
-                          await authHandler.handleAnonLogin();
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppointHome()));
-                        },
-                        child: Text(
-                          'Guest Login',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Container(
+                  //     height: 50,
+                  //     width: 200,
+                  //     child: ElevatedButton(
+                  //       style: ElevatedButton.styleFrom(
+                  //         primary: Colors.grey[700].withOpacity(0.1),
+                  //         side: BorderSide(width: 2, color: Colors.blue),
+                  //       ),
+                  //       onPressed: () async{
+                  //         await authHandler.handleAnonLogin();
+                  //         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppointHome()));
+                  //       },
+                  //       child: Text(
+                  //         'Guest Login',
+                  //         style: TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
