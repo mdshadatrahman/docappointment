@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctorappointment/pages/doctors.dart';
 import 'package:doctorappointment/pages/loginmethods.dart';
+import 'package:doctorappointment/pages/userAppointment.dart';
 import 'package:doctorappointment/pages/userprofile.dart';
 import 'package:doctorappointment/services/auth.dart';
 import 'package:doctorappointment/utils/money_icons.dart';
@@ -138,6 +139,7 @@ class _AppointHomeState extends State<AppointHome> {
                   side: BorderSide(width: 2.0, color: Colors.blue),
                 ),
                 onPressed: (){
+                  Navigator.push(context, new MaterialPageRoute(builder: (context) => UserAppointment()));
                 },
                 label: Text(
                   'My Appointments',
